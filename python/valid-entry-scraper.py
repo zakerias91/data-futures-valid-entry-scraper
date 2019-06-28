@@ -14,9 +14,11 @@ def main():
 
         for c in col:
             entry = c.getElementsByTagName("xs:enumeration")
-            for e in entry:
-                name = c.getAttribute("name")
                 
+            for i, e in enumerate(entry):
+                name = c.getAttribute("name")
+                label = c.getElementsByTagName("Label")
+                        
                 # remove endings
                 for ending in endings:
                     if name.endswith(ending):
@@ -27,7 +29,11 @@ def main():
 
                 # remove actions
                 if c.getAttribute("name") != 'action':
-                    line = ','.join(ef) + ',' + e.getAttribute("value")
+                    
+                    # remove newlines when label is blank
+                    clean_label = label[i].firstChild.nodeValue.strip('\n')
+                    
+                    line = ','.join(ef) + ',' + e.getAttribute("value") + ',' + clean_label
                     csv_f.write(line + '\n')
     
     csv_f.close()
